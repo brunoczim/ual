@@ -31,8 +31,3 @@ record Ord {a} (A : Set a) : Set (lsuc a) where
     trans      : {x y z : A} → x < y → y < z → x < z
 
 open Ord ⦃ ... ⦄ public
-
-record Compare {a} (A : Set a) : Set (lsuc a) where
-  field
-    ⦃ ordA ⦄ : Ord A
-    compare  : (x : A) → (y : A) → Order x y
