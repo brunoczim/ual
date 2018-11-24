@@ -2,7 +2,7 @@ module Ual.Ord where
 
 open import Agda.Primitive
 open import Ual.Void
-open import Ual.Eq hiding (sym; trans; self)
+open import Ual.Eq
 open import Ual.Either
 open import Ual.Both
 
@@ -12,18 +12,25 @@ record Ord {a} (A : Set a) : Set (lsuc a) where
   infix 30 _≤_
   infix 30 _≥_
   field
-    ⦃ eq ⦄     : Eq A
+    ⦃ eqA ⦄     : Eq A
     _<_        : A → A → Set
   _>_ : A → A → Set
   x > y = x ≠ y ∧ ¬ (x < y)
   _≤_ : A → A → Set
   x ≤ y = x == y ∨ x < y
   _≥_ : A → A → Set
-  x ≥ y = x == y ∨ ¬ (x < y)
+  x ≥ y = x == y ∨ x > y
   field
-    symLess    : {x y : A} → x < y → y ≥ x
-    symGreater : {x y : A} → x > y → y ≤ x
-    trans      : {x y z : A} → x < y → y < z → x < z
+    ltNotEq : {x y : A} → x < y → x ≠ y
+    symLt   : {x y : A} → x < y → y > x
+    symGt   : {x y : A} → x > y → y < x
+  symLe : {x y : A} → x ≤ y → y ≥ x
+  symLe (orL eq) = orL (sym ⦃ eqA ⦄ eq)
+  symLe (orR lt) = orR (symLt lt)
+  symGe : {x y : A} → x ≥ y → y ≤ x
+  symGe (orL eq) = orL (sym ⦃ eqA ⦄ eq)
+  symGe (orR gt) = orR (symGt gt)
+
 
 open Ord ⦃ ... ⦄ public
 
