@@ -24,6 +24,9 @@ record Ord {a} (A : Set a) : Set (lsuc a) where
     ltNotEq : {x y : A} → x < y → x ≠ y
     symLt   : {x y : A} → x < y → y > x
     symGt   : {x y : A} → x > y → y < x
+    transLt : {x y z : A} → x < y → y < z → x < z
+    transLe : {x y z : A} → x ≤ y → y ≤ z → x ≤ z
+
   symLe : {x y : A} → x ≤ y → y ≥ x
   symLe (orL eq) = orL (sym ⦃ eqA ⦄ eq)
   symLe (orR lt) = orR (symLt lt)
@@ -31,6 +34,10 @@ record Ord {a} (A : Set a) : Set (lsuc a) where
   symGe (orL eq) = orL (sym ⦃ eqA ⦄ eq)
   symGe (orR gt) = orR (symGt gt)
 
+  transGt : {x y z : A} → x > y → y > z → x > z
+  transGt gt1 gt2 = symLt (transLt (symGt gt2) (symGt gt1))
+  transGe : {x y z : A} → x ≥ y → y ≥ z → x ≥ z
+  transGe ge1 ge2 = symLe (transLe (symGe ge2) (symGe ge1))
 
 open Ord ⦃ ... ⦄ public
 
