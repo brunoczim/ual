@@ -20,14 +20,19 @@ record Ord {a} (A : Set a) : Set (lsuc a) where
   x ≤ y = x == y ∨ x < y
   _≥_ : A → A → Set
   x ≥ y = x == y ∨ ¬ (x < y)
-  data Order : A → A → Set where
-    less    : {x y : A} → x < y → Order x y
-    equal   : {x y : A} → x == y → Order x y
-    greater : {x y : A} → x > y → Order x y
   field
-    compare    : (x : A) → (y : A) → Order x y
     symLess    : {x y : A} → x < y → y ≥ x
     symGreater : {x y : A} → x > y → y ≤ x
     trans      : {x y z : A} → x < y → y < z → x < z
 
 open Ord ⦃ ... ⦄ public
+
+data Order {a} {A : Set a} ⦃ ordA : Ord A ⦄ : A → A → Set where
+  less    : {x y : A} → x < y → Order x y
+  equal   : {x y : A} → x == y → Order x y
+  greater : {x y : A} → x > y → Order x y
+
+record Compare {a} (A : Set a) : Set (lsuc a) where
+  field
+    ⦃ ordA ⦄ : Ord A
+    compare  : (x : A) → (y : A) → Order x y
